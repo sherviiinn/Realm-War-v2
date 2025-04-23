@@ -1,4 +1,4 @@
-package main.java.com.realmwar.models.blocks;
+package com.realmwar.models.blocks;
 
 import com.realmwar.models.Position;
 

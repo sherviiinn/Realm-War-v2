@@ -1,8 +1,11 @@
-package main.java.com.realmwar.models;
+package com.realmwar.models;
 
 import com.realmwar.models.blocks.Block;
 import com.realmwar.models.structures.Structure;
 import com.realmwar.models.units.Unit;
+import com.realmwar.models.structures.TownHall;
+import com.realmwar.models.structures.Farm;
+import com.realmwar.models.structures.Market;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,13 +1,19 @@
-package main.java.com.realmwar.models;
+package com.realmwar.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.realmwar.models.blocks.Block;
+import com.realmwar.models.blocks.VoidBlock;
+import com.realmwar.models.blocks.ForestBlock;
+import com.realmwar.models.blocks.EmptyBlock;
+import com.realmwar.models.structures.TownHall;
 
 public class GameState {
     private int currentPlayerTurn;
     private List<Kingdom> kingdoms;
     private Block[][] gameMap;
     private int turnNumber;
+    private boolean running;
 
     public GameState(int mapWidth, int mapHeight, int playerCount) {
         this.kingdoms = new ArrayList<>();
@@ -89,4 +95,12 @@ public class GameState {
     public Block[][] getGameMap() { return gameMap; }
     public int getTurnNumber() { return turnNumber; }
     public Kingdom getCurrentKingdom() { return kingdoms.get(currentPlayerTurn); }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
 }
