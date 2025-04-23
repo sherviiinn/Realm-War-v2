@@ -16,10 +16,18 @@ public class EmptyBlock extends Block {
     public int getResourceYield(String resourceType) {
         if (!isAbsorbed()) return 0;
         
-        return switch (resourceType) {
-            case "GOLD" -> 1;
-            case "FOOD" -> 0;
-            default -> 0;
-        };
+        int resourceYield;
+        switch (resourceType) {
+            case "GOLD":
+                resourceYield = 1;
+                break;
+            case "FOOD":
+                resourceYield = 0;
+                break;
+            default:
+                resourceYield = 0;
+                break;
+        }
+        return resourceYield;
     }
 }

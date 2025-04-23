@@ -1,4 +1,4 @@
-package main.java.com.realmwar.utils;
+package com.realmwar.utils;
 
 public class Constants {
     public static final int MAP_WIDTH = 15;

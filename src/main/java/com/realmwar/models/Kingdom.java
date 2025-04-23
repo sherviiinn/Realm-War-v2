@@ -89,6 +89,37 @@ public class Kingdom {
         absorbedBlocks.add(block);
     }
     
+    public void updateResources() {
+        // Generate resources from structures
+        for (Structure structure : structures) {
+            if (structure instanceof TownHall) {
+                this.gold += ((TownHall) structure).getGoldProduction();
+                this.food += ((TownHall) structure).getFoodProduction();
+            } else if (structure instanceof Farm) {
+                this.food += ((Farm) structure).getFoodProduction();
+            } else if (structure instanceof Market) {
+                this.gold += ((Market) structure).getGoldProduction();
+            }
+        }
+
+        // Generate resources from absorbed blocks
+        for (Block block : absorbedBlocks) {
+            this.gold += block.getResourceYield("GOLD");
+            this.food += block.getResourceYield("FOOD");
+        }
+
+        // Pay maintenance costs
+        for (Structure structure : structures) {
+            this.gold -= structure.getMaintenanceCost();
+        }
+
+        // Pay unit costs
+        for (Unit unit : units) {
+            this.gold -= unit.getPaymentCost();
+            this.food -= unit.getRationCost();
+        }
+    }
+    
     // Getters and setters
     public int getId() { return id; }
     public int getGold() { return gold; }

@@ -7,6 +7,7 @@ import com.realmwar.models.blocks.VoidBlock;
 import com.realmwar.models.blocks.ForestBlock;
 import com.realmwar.models.blocks.EmptyBlock;
 import com.realmwar.models.structures.TownHall;
+import java.io.*;
 
 public class GameState {
     private int currentPlayerTurn;
@@ -80,11 +81,17 @@ public class GameState {
     }
 
     public void nextTurn() {
+        // Update resources for all kingdoms
+        for (Kingdom kingdom : kingdoms) {
+            kingdom.updateResources();
+        }
+
+        // Move to the next player's turn
         currentPlayerTurn = (currentPlayerTurn + 1) % kingdoms.size();
         if (currentPlayerTurn == 0) {
             turnNumber++;
         }
-        
+
         // Start the new player's turn
         kingdoms.get(currentPlayerTurn).startTurn();
     }
@@ -102,5 +109,27 @@ public class GameState {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    // Method to save the current game state
+    public void saveGameState(String filePath) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
+            oos.writeObject(this);
+            System.out.println("Game state saved to " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to load a game state
+    public static GameState loadGameState(String filePath) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
+            GameState gameState = (GameState) ois.readObject();
+            System.out.println("Game state loaded from " + filePath);
+            return gameState;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

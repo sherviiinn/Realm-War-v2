@@ -1,4 +1,4 @@
-package main.java.com.realmwar.views;
+package com.realmwar.views;
 
 import com.realmwar.models.GameState;
 import com.realmwar.models.Kingdom;

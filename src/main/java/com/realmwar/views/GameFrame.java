@@ -1,7 +1,8 @@
-package main.java.com.realmwar.views;
+package com.realmwar.views;
 
 import javax.swing.*;
 import java.awt.*;
+import com.realmwar.models.GameState;
 
 public class GameFrame extends JFrame {
     private GamePanel gamePanel;
@@ -29,8 +30,8 @@ public class GameFrame extends JFrame {
     }
     
     // Methods to update UI based on game state
-    public void updateGameState() {
+    public void updateGameState(GameState gameState) {
         gamePanel.repaint();
-        infoPanel.updateInfo();
+        infoPanel.updateInfo(gameState);
     }
 }

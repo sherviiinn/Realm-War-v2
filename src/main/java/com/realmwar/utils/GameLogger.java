@@ -1,4 +1,4 @@
-package main.java.com.realmwar.utils;
+package com.realmwar.utils;
 
 import java.io.IOException;
 import java.nio.file.Files;

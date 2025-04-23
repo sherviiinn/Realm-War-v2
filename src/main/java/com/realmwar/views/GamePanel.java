@@ -1,7 +1,10 @@
-package main.java.com.realmwar.views;
+package com.realmwar.views;
 
 import com.realmwar.models.*;
-import com.realmwar.models.blocks.Block;
+import com.realmwar.models.blocks.*;
+import com.realmwar.models.structures.*;
+import com.realmwar.models.units.*;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +14,8 @@ import java.awt.event.MouseEvent;
 public class GamePanel extends JPanel {
     private static final int BLOCK_SIZE = 50;
     private GameState gameState;
+    private Unit selectedUnit;
+    private boolean moveMode;
     
     public GamePanel() {
         setPreferredSize(new Dimension(800, 600));
@@ -27,14 +32,89 @@ public class GamePanel extends JPanel {
         });
     }
     
+    public void enableMoveMode() {
+        moveMode = true;
+        selectedUnit = null;
+    }
+    
     private void handleClick(int x, int y) {
         int blockX = x / BLOCK_SIZE;
         int blockY = y / BLOCK_SIZE;
         
         if (blockX >= 0 && blockX < gameState.getGameMap().length &&
             blockY >= 0 && blockY < gameState.getGameMap()[0].length) {
-            // Handle block selection
-            System.out.println("Selected block at: " + blockX + ", " + blockY);
+            Block clickedBlock = gameState.getGameMap()[blockX][blockY];
+
+            if (moveMode) {
+                if (selectedUnit == null) {
+                    // Select a unit
+                    selectedUnit = findUnitAt(blockX, blockY);
+                    if (selectedUnit != null) {
+                        System.out.println("Unit selected at: " + blockX + ", " + blockY);
+                    }
+                } else {
+                    // Move the selected unit
+                    if (isValidMove(selectedUnit, blockX, blockY)) {
+                        selectedUnit.setPosition(new Position(blockX, blockY));
+                        System.out.println("Unit moved to: " + blockX + ", " + blockY);
+                        moveMode = false;
+                        selectedUnit = null;
+                        repaint();
+                    }
+                }
+            } else {
+                System.out.println("Selected block at: " + blockX + ", " + blockY);
+            }
+        }
+    }
+    
+    private Unit findUnitAt(int x, int y) {
+        for (Kingdom kingdom : gameState.getKingdoms()) {
+            for (Unit unit : kingdom.getUnits()) {
+                if (unit.getPosition().getX() == x && unit.getPosition().getY() == y) {
+                    return unit;
+                }
+            }
+        }
+        return null;
+    }
+    
+    private boolean isValidMove(Unit unit, int x, int y) {
+        // Check if the move is within the unit's movement range
+        int currentX = unit.getPosition().getX();
+        int currentY = unit.getPosition().getY();
+        int distance = Math.abs(currentX - x) + Math.abs(currentY - y);
+        return distance <= unit.getMovementRange() &&
+               x >= 0 && x < gameState.getGameMap().length &&
+               y >= 0 && y < gameState.getGameMap()[0].length &&
+               !(gameState.getGameMap()[x][y] instanceof VoidBlock);
+    }
+    
+    private void handleAttack(Unit attacker, int targetX, int targetY) {
+        Unit targetUnit = findUnitAt(targetX, targetY);
+        if (targetUnit != null && isValidAttack(attacker, targetUnit)) {
+            targetUnit.setHitPoints(targetUnit.getHitPoints() - attacker.getAttackPower());
+            System.out.println("Attacked unit at: " + targetX + ", " + targetY);
+            if (targetUnit.getHitPoints() <= 0) {
+                System.out.println("Unit defeated at: " + targetX + ", " + targetY);
+                removeUnit(targetUnit);
+            }
+            repaint();
+        }
+    }
+
+    private boolean isValidAttack(Unit attacker, Unit target) {
+        int attackerX = attacker.getPosition().getX();
+        int attackerY = attacker.getPosition().getY();
+        int targetX = target.getPosition().getX();
+        int targetY = target.getPosition().getY();
+        int distance = Math.abs(attackerX - targetX) + Math.abs(attackerY - targetY);
+        return distance <= attacker.getAttackRange();
+    }
+
+    private void removeUnit(Unit unit) {
+        for (Kingdom kingdom : gameState.getKingdoms()) {
+            kingdom.getUnits().remove(unit);
         }
     }
     
@@ -57,6 +137,30 @@ public class GamePanel extends JPanel {
             for (Unit unit : kingdom.getUnits()) {
                 drawUnit(g, unit);
             }
+        }
+        
+        // Highlight valid moves for the selected unit
+        if (selectedUnit != null) {
+            int currentX = selectedUnit.getPosition().getX();
+            int currentY = selectedUnit.getPosition().getY();
+            int range = selectedUnit.getMovementRange();
+            g.setColor(new Color(0, 255, 255, 128)); // Semi-transparent cyan
+            for (int dx = -range; dx <= range; dx++) {
+                for (int dy = -range; dy <= range; dy++) {
+                    int x = currentX + dx;
+                    int y = currentY + dy;
+                    if (isValidMove(selectedUnit, x, y)) {
+                        g.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    }
+                }
+            }
+        }
+
+        // Highlight selected unit
+        if (selectedUnit != null) {
+            Position pos = selectedUnit.getPosition();
+            g.setColor(Color.CYAN);
+            g.drawRect(pos.getX() * BLOCK_SIZE, pos.getY() * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
     }
     

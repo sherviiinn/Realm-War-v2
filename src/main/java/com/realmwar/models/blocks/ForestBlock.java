@@ -16,11 +16,19 @@ public class ForestBlock extends Block {
     public int getResourceYield(String resourceType) {
         if (!isAbsorbed()) return 0;
         
-        return switch (resourceType) {
-            case "GOLD" -> 0;
-            case "FOOD" -> 2; // Forest provides more food
-            default -> 0;
-        };
+        int resourceYield;
+        switch (resourceType) {
+            case "GOLD":
+                resourceYield = 0;
+                break;
+            case "FOOD":
+                resourceYield = 2; // Forest provides more food
+                break;
+            default:
+                resourceYield = 0;
+                break;
+        }
+        return resourceYield;
     }
     
     public double getAttackBonus() {

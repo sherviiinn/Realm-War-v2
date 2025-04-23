@@ -1,4 +1,4 @@
-package main.java.com.realmwar.views;
+package com.realmwar.views;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,11 +28,28 @@ public class ActionPanel extends JPanel {
         
         // Add action listeners
         endTurnButton.addActionListener(e -> {
-            // Handle end turn
+            // Trigger next turn in GameState
+            // Example: gameState.nextTurn();
         });
         
         buildButton.addActionListener(e -> {
             // Open build menu
+            JOptionPane.showMessageDialog(this, "Build menu opened.");
+        });
+
+        recruitButton.addActionListener(e -> {
+            // Open recruit menu
+            JOptionPane.showMessageDialog(this, "Recruit menu opened.");
+        });
+
+        moveButton.addActionListener(e -> {
+            // Enable move mode
+            JOptionPane.showMessageDialog(this, "Move mode enabled.");
+        });
+
+        attackButton.addActionListener(e -> {
+            // Enable attack mode
+            JOptionPane.showMessageDialog(this, "Attack mode enabled.");
         });
     }
 }
